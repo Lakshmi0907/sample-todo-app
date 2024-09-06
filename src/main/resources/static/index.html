@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To Do List</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h2>List of To Do</h2>
+    <ul id="tasks"></ul>
+    <script>
+        axios
+            .get("http://localhost:8080/api/todos")
+            .then(res => res.data)
+            .then(data => {
+                const myList = document.getElementById("tasks");
+                data.forEach(task => {
+                    const listItem = document.createElement("li");
+                    listItem.innerHTML = task;
+                    myList.appendChild(listItem);
+                });
+            })
+            .catch(err => {
+                console.err(err);
+            })
+    </script>
+</body>
+</html>
