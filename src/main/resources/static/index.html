@@ -6,8 +6,6 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <h2>List of To Do</h2>
-    <ul id="tasks"></ul>
     <script>
         axios
             .get("http://localhost:8080/api/todos")
@@ -23,6 +21,28 @@
             .catch(err => {
                 console.err(err);
             })
+        function handleSubmit(event) {
+            event.preventDefault();
+            const newToDo = document.getElementById("newtodo").value;
+            axios
+                .post("http://localhost:8080/api/todo", { name: newToDo })
+                .then(res => res.data)
+                .then(data => {
+                    if (data) {
+                        const myList = document.getElementById("tasks");
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = newToDo;
+                        myList.appendChild(listItem);
+                        document.getElementById("newtodo").value = '';
+                    }
+                })
+        }
     </script>
+    <h2>List of To Do</h2>
+    <ul id="tasks"></ul>
+    <form action="#" onsubmit="handleSubmit(event)">
+        <input type="text" name="name" id="newtodo">
+        <button type="submit">Submit</button>
+    </form>
 </body>
 </html>

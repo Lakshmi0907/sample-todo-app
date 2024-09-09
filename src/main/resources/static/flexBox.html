@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flex Box</title>
+    <style>
+        .flexbox {
+            display: flex;
+            justify-content:space-between;
+            /* min-height:100vh; */
+            /* align-items:center; */
+        }
+        p {
+            border-style: solid;
+            border-color:black;
+        }
+        .container {
+            display: flex;
+            justify-content:space-between;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="flexbox">
+            <p>A</p>
+            <p>B</p>
+        </div>
+        
+        <div class="flexbox">
+            <p>C</p>
+            <p>D</p>
+        </div>
+    </div>
+
+
+
+</body>
+</html>

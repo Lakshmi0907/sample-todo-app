@@ -1,8 +1,9 @@
 package com.example.demo.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.demo.dtos.AddToDoDto;
+import com.example.demo.services.TodoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,21 +11,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class ToDoRestController {
-
-    private List<String> toDos;
-
-    public ToDoRestController() {
-        toDos = new ArrayList<>();
-        toDos.add("Task 1");
-        toDos.add("Task 2");
-        toDos.add("Task 3");
-        toDos.add("Task 4");
-        toDos.add("Task 5");
-        toDos.add("Task 6");
-    }
+    @Autowired
+    TodoService todoService;
 
     @GetMapping("/todos")
     public List<String> toDo() {
-        return this.toDos;
+        return todoService.getToDos();
+    }
+
+    @PostMapping("/todo")
+    public Boolean addToDo(@RequestBody AddToDoDto addToDoDto) {
+        todoService.addTodo(addToDoDto.getName());
+        return true;
     }
 }
