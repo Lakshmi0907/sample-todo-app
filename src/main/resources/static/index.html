@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>To Do List</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel ="stylesheet" href="styles.css">
 </head>
 <body>
     <script>
@@ -13,14 +14,28 @@
             .then(data => {
                 const myList = document.getElementById("tasks");
                 data.forEach(task => {
-                    const listItem = document.createElement("li");
-                    listItem.innerHTML = task;
+                    const listItem = createToDO(task);
                     myList.appendChild(listItem);
                 });
             })
             .catch(err => {
                 console.err(err);
             })
+
+        function createToDO(taskName) {
+            const listItem = document.createElement("li");
+            const container = document.createElement("div");
+            const taskNode = document.createElement("p");
+            const deleteButton = document.createElement("button");
+            listItem.appendChild(container);
+            container.appendChild(taskNode);
+            container.appendChild(deleteButton);
+            taskNode.innerHTML = taskName;
+            deleteButton.innerHTML = "Delete";
+            deleteButton.addEventListener("click",handleDelete(deleteButton))
+            return listItem;
+        }
+
         function handleSubmit(event) {
             event.preventDefault();
             const newToDo = document.getElementById("newtodo").value;
@@ -30,19 +45,44 @@
                 .then(data => {
                     if (data) {
                         const myList = document.getElementById("tasks");
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = newToDo;
-                        myList.appendChild(listItem);
+                        const taskNode = createToDO(newToDo);
+                        myList.appendChild(taskNode);
                         document.getElementById("newtodo").value = '';
                     }
                 })
         }
+
+        function handleDelete(deleteButton) {
+            function deleteHandler(event) {
+                const parent = deleteButton.parentElement;
+                const toDo = parent.querySelector("p");
+                const toDoToBeDeleted = toDo.innerText;
+                axios
+                    .delete("http://localhost:8080/api/delete-todo", {
+                        params: {
+                            name:toDoToBeDeleted
+                        }
+                    })
+                    .then(res => res.data)
+                    .then(data => {
+                        if (data) {
+                            const myList = document.getElementById("tasks");
+                            const listItem = parent.parentElement;
+                            myList.removeChild(listItem);
+                        }
+                    })
+            }
+            return deleteHandler;
+        }
     </script>
     <h2>List of To Do</h2>
     <ul id="tasks"></ul>
-    <form action="#" onsubmit="handleSubmit(event)">
-        <input type="text" name="name" id="newtodo">
-        <button type="submit">Submit</button>
-    </form>
+    <br>
+    <div class="container">
+        <form action="#" onsubmit="handleSubmit(event)">
+            <input type="text" name="name" id="newtodo"></br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
 </body>
 </html>

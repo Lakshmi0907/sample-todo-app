@@ -23,6 +23,10 @@ public class TodoService {
         this.toDos.add(name);
     }
 
+    public void deleteTodo(String name) {
+        this.toDos.remove(name);
+    }
+
     public List<String> getToDos() {
         return this.toDos;
     }

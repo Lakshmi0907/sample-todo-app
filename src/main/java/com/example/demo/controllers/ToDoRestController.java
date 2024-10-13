@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dtos.AddToDoDto;
+import com.example.demo.dtos.DeleteToDoDTO;
 import com.example.demo.services.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,12 @@ public class ToDoRestController {
     @PostMapping("/todo")
     public Boolean addToDo(@RequestBody AddToDoDto addToDoDto) {
         todoService.addTodo(addToDoDto.getName());
+        return true;
+    }
+
+    @DeleteMapping("/delete-todo")
+    public Boolean deleteToDo(@RequestParam("name") String taskToDelete) {
+        todoService.deleteTodo(taskToDelete);
         return true;
     }
 }

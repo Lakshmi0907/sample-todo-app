@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        .container {
+            display: flex;
+        }
+        .row {
+            flex-direction: row;
+        }
+        
+        .column {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 25%;
+            min-height: 100%;
+        }
+        .search input{
+            width:30%;
+            height: 10px;
+        }
+        .folders {
+            flex-flow: row;
+        }
+        .today-scheduled {
+
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container row">
+        <div class="container column sidebar">
+            <div class="search">
+                <input type="text" placeholder="Enter To Do Task"></input>
+            </div>
+            <div class="folders">
+                <div class="today-scheduled">
+                    <p> Today</p>
+                    <p> Scheduled </p>
+                </div>
+            </div>
+
+        </div>
+        <div class="container column">
+            Right
+        </div>
+    </div>
+
+</body>
+</html>
