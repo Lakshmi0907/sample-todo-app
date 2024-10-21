@@ -2,6 +2,7 @@ package com.example.demo.dtos;
 
 public class DeleteToDoDTO {
     private String name;
+    private Long id;
 
     public String getName() {
         return name;

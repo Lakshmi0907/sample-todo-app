@@ -9,7 +9,7 @@
 <body>
     <script>
         axios
-            .get("http://localhost:8080/api/todos")
+            .get("http://localhost:8080/api/todos/view")
             .then(res => res.data)
             .then(data => {
                 const myList = document.getElementById("tasks");
@@ -22,15 +22,16 @@
                 console.err(err);
             })
 
-        function createToDO(taskName) {
+        function createToDO(task) {
             const listItem = document.createElement("li");
+            listItem.setAttribute("data-id",task.id);
             const container = document.createElement("div");
             const taskNode = document.createElement("p");
             const deleteButton = document.createElement("button");
             listItem.appendChild(container);
             container.appendChild(taskNode);
             container.appendChild(deleteButton);
-            taskNode.innerHTML = taskName;
+            taskNode.innerHTML = task.name;
             deleteButton.innerHTML = "Delete";
             deleteButton.addEventListener("click",handleDelete(deleteButton))
             return listItem;
@@ -40,12 +41,13 @@
             event.preventDefault();
             const newToDo = document.getElementById("newtodo").value;
             axios
-                .post("http://localhost:8080/api/todo", { name: newToDo })
+                .post("http://localhost:8080/api/todo/add",
+                { name: newToDo },)
                 .then(res => res.data)
                 .then(data => {
                     if (data) {
                         const myList = document.getElementById("tasks");
-                        const taskNode = createToDO(newToDo);
+                        const taskNode = createToDO(data);
                         myList.appendChild(taskNode);
                         document.getElementById("newtodo").value = '';
                     }
@@ -54,21 +56,19 @@
 
         function handleDelete(deleteButton) {
             function deleteHandler(event) {
-                const parent = deleteButton.parentElement;
-                const toDo = parent.querySelector("p");
-                const toDoToBeDeleted = toDo.innerText;
+                const parent = deleteButton.parentElement.parentElement;
+                const toDoToBeDeleted = parent.getAttribute("data-id");
                 axios
-                    .delete("http://localhost:8080/api/delete-todo", {
+                    .get("http://localhost:8080/api/todo/delete", {
                         params: {
-                            name:toDoToBeDeleted
+                            id: toDoToBeDeleted
                         }
                     })
                     .then(res => res.data)
                     .then(data => {
                         if (data) {
                             const myList = document.getElementById("tasks");
-                            const listItem = parent.parentElement;
-                            myList.removeChild(listItem);
+                            myList.removeChild(parent);
                         }
                     })
             }

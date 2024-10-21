@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: demo
+
+  devtools:
+    enable:
+      restart: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/todolistapp
+    username: adi
+    password: 1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  security:
+    cors:
+      allowed-methods: "GET,POST,DELETE"

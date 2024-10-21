@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.demo.dtos.AddToDoDto;
+import com.example.demo.dtos.DeleteToDoDTO;
 import com.example.demo.services.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,8 +31,8 @@ public class ToDoController {
     }
 
     @PostMapping("/delete-todo")
-    public String deleteToDo(@ModelAttribute AddToDoDto deleteToDo, Model model) {
-        todoService.deleteTodo(deleteToDo.getName());
+    public String deleteToDo(@RequestParam Long id, Model model) {
+        todoService.deleteTodo(id);
         model.addAttribute("todos", todoService.getToDos());
         return "todos";
     }
