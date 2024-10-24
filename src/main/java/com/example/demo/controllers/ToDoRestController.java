@@ -2,11 +2,14 @@ package com.example.demo.controllers;
 
 import com.example.demo.dtos.requestdtos.AddSubToDoDto;
 import com.example.demo.dtos.requestdtos.AddToDoDto;
+import com.example.demo.dtos.requestdtos.EditToDoDto;
 import com.example.demo.dtos.responsedto.ResponseDto;
+import com.example.demo.dtos.responsedto.ResponseEditToDoDto;
 import com.example.demo.dtos.responsedto.SubToDoDto;
 import com.example.demo.dtos.responsedto.ToDoDto;
 import com.example.demo.entities.ToDo;
 import com.example.demo.services.TodoService;
+import jakarta.persistence.PreUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.web.server.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
@@ -40,8 +43,23 @@ public class ToDoRestController {
         return todoService.deleteTodo(id);
     }
 
+    @DeleteMapping("/subtodo")
+    public ResponseDto<Boolean> deleteSubToDo(@RequestParam("id") long id) {
+        return todoService.deleteSubToDo(id);
+    }
+
     @PostMapping("/subtodo")
     public ResponseDto<SubToDoDto> addSubToDo(@RequestBody AddSubToDoDto addSubToDoDto) {
             return todoService.addSubToDo(addSubToDoDto);
+    }
+
+    @PutMapping("/")
+    public ResponseDto<ResponseEditToDoDto> editToDo(@RequestBody EditToDoDto editToDoDto) {
+        return todoService.editToDo(editToDoDto);
+    }
+
+    @PutMapping("/subtodo")
+    public ResponseDto<ResponseEditToDoDto> editSubToDo(@RequestBody EditToDoDto editToDoDto) {
+        return todoService.editSubToDo(editToDoDto);
     }
 }

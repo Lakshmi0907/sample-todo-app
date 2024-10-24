@@ -1,7 +1,10 @@
 package com.example.demo.services;
 
 import com.example.demo.dtos.requestdtos.AddSubToDoDto;
+import com.example.demo.dtos.requestdtos.AddToDoDto;
+import com.example.demo.dtos.requestdtos.EditToDoDto;
 import com.example.demo.dtos.responsedto.ResponseDto;
+import com.example.demo.dtos.responsedto.ResponseEditToDoDto;
 import com.example.demo.dtos.responsedto.SubToDoDto;
 import com.example.demo.dtos.responsedto.ToDoDto;
 import com.example.demo.entities.SubToDo;
@@ -76,9 +79,20 @@ public class TodoService {
         }
     }
 
-    public ResponseDto<Boolean> deleteTodo(Long id) {
+    public ResponseDto<Boolean> deleteTodo(long id) {
         try {
             this.toDoRepository.deleteById(id);
+            return new ResponseDto<>(true, " deleted successfully", true);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return new ResponseDto<>(false, " deleted successfully", false);
+        }
+    }
+
+    public ResponseDto<Boolean> deleteSubToDo(long id) {
+        try {
+            this.subToDoRepository.deleteById(id);
             return new ResponseDto<>(true, " deleted successfully", true);
         }
         catch(Exception e) {
@@ -112,5 +126,37 @@ public class TodoService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public ResponseDto<ResponseEditToDoDto> editToDo(EditToDoDto editToDoDto) {
+        Optional<ToDo> toDo = this.toDoRepository.findById(editToDoDto.getId());
+        if(toDo.isEmpty()) {
+            return new ResponseDto<>(false, "no record found");
+        }
+        ToDo todo = toDo.get();
+        if(editToDoDto.getName()!=null) {
+            todo.setName(editToDoDto.getName());
+        }
+        todo = this.toDoRepository.save(todo);
+        return new ResponseDto<>(
+                true,
+                "edited successfully",
+                new ResponseEditToDoDto(todo.getId(), todo.getName()));
+    }
+
+    public ResponseDto<ResponseEditToDoDto> editSubToDo(EditToDoDto editToDoDto) {
+        Optional<SubToDo> subToDo = this.subToDoRepository.findById(editToDoDto.getId());
+        if(subToDo.isEmpty()) {
+            return new ResponseDto<>(false, "no record found");
+        }
+        SubToDo subtodo = subToDo.get();
+        if(editToDoDto.getName()!=null) {
+            subtodo.setName(editToDoDto.getName());
+        }
+        subtodo = this.subToDoRepository.save(subtodo);
+        return new ResponseDto<>(
+                true,
+                "edited successfully",
+                new ResponseEditToDoDto(subtodo.getId(), subtodo.getName()));
     }
 }
