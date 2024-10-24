@@ -21,11 +21,12 @@ public class SubToDo {
         // Constructors, Getters, and Setters
         public SubToDo() {}
 
-        public SubToDo(String name, boolean completed) {
-            this.name = name;
-        }
+    public SubToDo(String name, ToDo toDo) {
+        this.name = name;
+        this.toDo = toDo;
+    }
 
-        public Long getId() {
+    public Long getId() {
             return id;
         }
 

@@ -1,28 +1,26 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dtos.AddSubToDoDto;
-import com.example.demo.dtos.AddToDoDto;
-import com.example.demo.dtos.DeleteToDoDTO;
-import com.example.demo.entities.SubToDo;
+import com.example.demo.dtos.requestdtos.AddSubToDoDto;
+import com.example.demo.dtos.requestdtos.AddToDoDto;
+import com.example.demo.dtos.responsedto.ResponseDto;
+import com.example.demo.dtos.responsedto.SubToDoDto;
+import com.example.demo.dtos.responsedto.ToDoDto;
 import com.example.demo.entities.ToDo;
 import com.example.demo.services.TodoService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.web.server.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/todo")
 public class ToDoRestController {
     @Autowired
     TodoService todoService;
 
-    @GetMapping("/todos/view")
-    public List<ToDo> toDo() {
+    @GetMapping("/")
+    public ResponseDto<List<ToDoDto>> toDo() {
         return todoService.getToDos();
     }
 
@@ -32,23 +30,18 @@ public class ToDoRestController {
 //        return (CsrfToken) csrfAttribute;
 //
 //    }
-    @PostMapping("/todo/add")
-    public ToDo addToDo(@RequestBody AddToDoDto addToDoDto) {
+    @PostMapping("/")
+    public ResponseDto<ToDoDto> addToDo(@RequestBody AddToDoDto addToDoDto) {
         return todoService.addTodo(addToDoDto.getName());
     }
 
-    @GetMapping("/todo/delete")
-    public Boolean deleteToDo(@RequestParam("id") long id) {
-        todoService.deleteTodo(id);
-        return true;
+    @DeleteMapping("/")
+    public ResponseDto<Boolean> deleteToDo(@RequestParam("id") long id) {
+        return todoService.deleteTodo(id);
     }
 
-    @PostMapping("/todo/add-subtodo")
-    public String addSubToDo(@RequestBody AddSubToDoDto addSubToDoDto) {
-        if(todoService.addSubToDo(addSubToDoDto.getTaskId(), addSubToDoDto.getName())!=null) {
-            return "record added successfully";
-        }
-        else
-            return "Some error occured";
+    @PostMapping("/subtodo")
+    public ResponseDto<SubToDoDto> addSubToDo(@RequestBody AddSubToDoDto addSubToDoDto) {
+            return todoService.addSubToDo(addSubToDoDto);
     }
 }

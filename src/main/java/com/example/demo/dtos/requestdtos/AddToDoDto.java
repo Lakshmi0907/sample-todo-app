@@ -1,8 +1,6 @@
-package com.example.demo.dtos;
-
-public class DeleteToDoDTO {
+package com.example.demo.dtos.requestdtos;
+public class AddToDoDto {
     private String name;
-    private Long id;
 
     public String getName() {
         return name;

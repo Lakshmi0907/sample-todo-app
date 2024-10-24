@@ -1,5 +1,9 @@
 package com.example.demo.services;
 
+import com.example.demo.dtos.requestdtos.AddSubToDoDto;
+import com.example.demo.dtos.responsedto.ResponseDto;
+import com.example.demo.dtos.responsedto.SubToDoDto;
+import com.example.demo.dtos.responsedto.ToDoDto;
 import com.example.demo.entities.SubToDo;
 import com.example.demo.entities.ToDo;
 import com.example.demo.repositories.SubToDoRepository;
@@ -20,49 +24,91 @@ public class TodoService {
     private SubToDoRepository subToDoRepository;
 
 
-    public ToDo addTodo(String name){
+    public ResponseDto<ToDoDto> addTodo(String name){
         try {
             ToDo toDo = new ToDo(name);
-            return this.toDoRepository.save(toDo);
+            toDo = this.toDoRepository.save(toDo);
+            ToDoDto toDoDto = new ToDoDto(toDo.getId(), toDo.getName(), new ArrayList<>());
+            return new ResponseDto<>(
+                    true,
+                    "Added successfully",
+                    toDoDto
+            );
         }
         catch(Exception e){
             e.printStackTrace();
-            return null;
+            return new ResponseDto<>(
+                    false,
+                    "Error while creating todo",
+                    null
+            );
         }
     }
 
-    public SubToDo addSubToDo(long taskid, String name) {
-
+    public ResponseDto<SubToDoDto> addSubToDo(AddSubToDoDto addSubToDoDto) {
+        long taskid = addSubToDoDto.getTaskId();
+        String name = addSubToDoDto.getName();
         Optional<ToDo> toDo = this.toDoRepository.findById(taskid);
         if(toDo.isEmpty()) {
-            return null;
+            return new ResponseDto<>(false, "No Task found with the given id");
         }
         try {
-            SubToDo subToDo = new SubToDo();
-            subToDo.setName(name);
-//            subToDo.setId(taskid);
-            subToDo.setTask(toDo.get());
-//            System.out.println(subToDo.getId());
-            return this.subToDoRepository.save(subToDo);
+            SubToDo subToDo = new SubToDo(name, toDo.get());
+            subToDo = this.subToDoRepository.save(subToDo);
+            SubToDoDto subToDoDto = new SubToDoDto(
+                    subToDo.getId(),
+                    subToDo.getTask().getId(),
+                    subToDo.getName()
+                    );
+            return new ResponseDto<>(
+                    true,
+                    " Sub task added successfully",
+                    subToDoDto
+            );
         }
         catch(Exception e) {
             e.printStackTrace();
-            return null;
+            return new ResponseDto<>(
+                    false,
+                    " failed to add Sub Task",
+                    null
+            );
         }
     }
 
-
-
-    public void deleteTodo(Long id) {
-
-        this.toDoRepository.deleteById(id);
+    public ResponseDto<Boolean> deleteTodo(Long id) {
+        try {
+            this.toDoRepository.deleteById(id);
+            return new ResponseDto<>(true, " deleted successfully", true);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return new ResponseDto<>(false, " deleted successfully", false);
+        }
     }
 
-    public List<ToDo> getToDos() {
+    public ResponseDto<List<ToDoDto>> getToDos() {
         try{
-            return this.toDoRepository.findAll();
+            List<ToDo> toDos = this.toDoRepository.findAll();
+            ResponseDto<List<ToDoDto>> response = new ResponseDto<>();
+            List<ToDoDto> toDoDtos = new ArrayList<>();
+            for (ToDo toDo:toDos) {
+                List<SubToDoDto> subToDoDtos = new ArrayList<>(toDo.getSubtasks().size());
+
+                for ( SubToDo subToDo:toDo.getSubtasks()) {
+                    subToDoDtos.add(new SubToDoDto(
+                            subToDo.getId(),
+                            subToDo.getTask().getId(),
+                            subToDo.getName()
+                    ));
+                }
+                toDoDtos.add(new ToDoDto(toDo.getId(), toDo.getName(), subToDoDtos));
+            }
+            response.setSuccess(true);
+            response.setData(toDoDtos);
+            return response;
         }
-        catch(Exception e){
+        catch(Exception e) {
             e.printStackTrace();
             return null;
         }
